@@ -210,14 +210,17 @@ UVCControl.prototype.close = function() {
  * @param  {string} controlName
  * @param  {Function} callback(error,value)
  */
-UVCControl.prototype.get = function(id, callback) {
-  this.getControlParams(id, function(error, params) {
-    if (error) return callback(error);
-    this.device.controlTransfer(0b10100001, UVC_GET_CUR, params.wValue, params.wIndex, params.wLength, function(error,buffer) {
-      if (error) return callback(error);
-      callback(null, buffer.readIntLE(0,params.wLength));
-    });
-  }.bind(this));
+UVCControl.prototype.get = function(id) {
+  return new Promise((resolve,reject)=>{
+    this.getControlParams(id, function(error, params) {
+      if (error) return reject(error);
+      this.device.controlTransfer(0b10100001, UVC_GET_CUR, params.wValue, params.wIndex, params.wLength, function(error,buffer) {
+        if (error) return reject(error);
+        resolve(buffer.readIntLE(0,params.wLength))
+      });
+    }.bind(this));
+  })
+
 }
 
 /**
@@ -226,13 +229,23 @@ UVCControl.prototype.get = function(id, callback) {
  * @param  {number}   value
  * @param  {Function} callback(error)
  */
-UVCControl.prototype.set = function(id, value, callback) {
-  this.getControlParams(id, function(error, params) {
-    if (error) return callback(error);
-    var data = new Buffer(params.wLength);
-    data.writeIntLE(value, 0, params.wLength);
-    this.device.controlTransfer(0b00100001, UVC_SET_CUR, params.wValue, params.wIndex, data, callback);
-  }.bind(this));
+UVCControl.prototype.set = function(id, value) {
+  return new Promise((resolve,reject)=>{
+    this.getControlParams(id, function(error, params) {
+      if (error) return reject(error);
+      var data = new Buffer(params.wLength);
+      data.writeIntLE(value, 0, params.wLength);
+      this.device.controlTransfer(0b00100001, UVC_SET_CUR, params.wValue, params.wIndex, data, (error)=>{
+        if(error){
+          reject(error)
+        }
+        else {
+          resolve(value)
+        }
+      });
+    }.bind(this));
+  })
+
 }
 
 /**
@@ -242,10 +255,20 @@ UVCControl.prototype.set = function(id, value, callback) {
  * @param  {Function} callback(error)
  */
 UVCControl.prototype.setRaw = function(id, value, callback) {
-  this.getControlParams(id, function(error, params) {
-    if (error) return callback(error);
-    this.device.controlTransfer(0b00100001, UVC_SET_CUR, params.wValue, params.wIndex, value, callback);
-  }.bind(this));
+
+  return new Promise((resolve,reject)=>{
+    this.getControlParams(id, function(error, params) {
+      if (error) return reject(error);
+      this.device.controlTransfer(0b00100001, UVC_SET_CUR, params.wValue, params.wIndex, value, (error)=>{
+        if(error){
+          reject(error)
+        }
+        else {
+          resolve()
+        }
+      });
+    }.bind(this));
+  })
 }
 
 /**
@@ -254,16 +277,21 @@ UVCControl.prototype.setRaw = function(id, value, callback) {
  * @param  {Function} callback(error,minMax)
  */
 UVCControl.prototype.range = function(id, callback) {
-  this.getControlParams(id, function(error, params) {
-    if (error) return callback(error);
-    this.device.controlTransfer(0b10100001, UVC_GET_MIN, params.wValue, params.wIndex, params.wLength, function(error,min) {
-      if (error) return callback(error);
-      this.device.controlTransfer(0b10100001, UVC_GET_MAX, params.wValue, params.wIndex, params.wLength, function(error,max) {
-        if (error) return callback(error);
-        callback(null,[min.readIntLE(0,params.wLength), max.readIntLE(0,params.wLength)]);
+
+  return new Promise((resolve,reject)=>{
+    this.getControlParams(id, function(error, params) {
+      if (error) return reject(error);
+      this.device.controlTransfer(0b10100001, UVC_GET_MIN, params.wValue, params.wIndex, params.wLength, function(error,min) {
+        if (error) return reject(error);
+        this.device.controlTransfer(0b10100001, UVC_GET_MAX, params.wValue, params.wIndex, params.wLength, function(error,max) {
+          if (error) return reject(error);
+          resolve([min.readIntLE(0,params.wLength), max.readIntLE(0,params.wLength)])
+        }.bind(this));
       }.bind(this));
     }.bind(this));
-  }.bind(this));
+  })
+
+
 }
 
 /**
