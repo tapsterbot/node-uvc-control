@@ -47,10 +47,20 @@ var Controls = {
     selector: 0x0B,
     size: 2
   },
+  relativeZoom: {
+    unit: UVC_INPUT_TERMINAL_ID,
+    selector: 0x0C,
+    size: 2 // dwPanAbsolute (4 bytes) + dwTiltAbsolute (4 bytes)
+  },
   absolutePanTilt: {
     unit: UVC_INPUT_TERMINAL_ID,
     selector: 0x0D,
     size: 8 // dwPanAbsolute (4 bytes) + dwTiltAbsolute (4 bytes)
+  },
+  relativePanTilt: {
+    unit: UVC_INPUT_TERMINAL_ID,
+    selector: 0x0E,
+    size: 4 // dwPanAbsolute (4 bytes) + dwTiltAbsolute (4 bytes)
   },
   autoFocus: {
     unit: UVC_INPUT_TERMINAL_ID,
@@ -121,18 +131,18 @@ UVCControl.prototype.init = function() {
     // find cam with vid / pid / deviceAddress
     this.device = usb.getDeviceList().filter(function(device){
       return isWebcam(device) &&
-              device.deviceDescriptor.idVendor === this.options.vid && 
-              device.deviceDescriptor.idProduct === this.options.pid &&
-              device.deviceAddress === this.options.deviceAddress;
+        device.deviceDescriptor.idVendor === this.options.vid &&
+        device.deviceDescriptor.idProduct === this.options.pid &&
+        device.deviceAddress === this.options.deviceAddress;
     }.bind(this))[0];
 
   }else if(this.options.vid && this.options.pid){
-    
+
     // find a camera that matches the vid / pid
     this.device = usb.getDeviceList().filter(function(device){
       return isWebcam(device) &&
-              device.deviceDescriptor.idVendor === this.options.vid && 
-              device.deviceDescriptor.idProduct === this.options.pid;
+        device.deviceDescriptor.idVendor === this.options.vid &&
+        device.deviceDescriptor.idProduct === this.options.pid;
     }.bind(this))[0];
 
   }else if(this.options.vid){
@@ -140,7 +150,7 @@ UVCControl.prototype.init = function() {
     // find a camera that matches the vendor id
     this.device = usb.getDeviceList().filter(function(device){
       return isWebcam(device) &&
-              device.deviceDescriptor.idVendor === this.options.vid;
+        device.deviceDescriptor.idVendor === this.options.vid;
     }.bind(this))[0];
 
   }else{
@@ -275,7 +285,7 @@ UVCControl.validate = device => { return new Promise((resolve, reject) => {
 
   if (device.deviceDescriptor.iProduct) {
     device.open();
-    
+
     // http://www.usb.org/developers/defined_class/#BaseClass10h
     if(isWebcam(device)){
       device.getStringDescriptor(device.deviceDescriptor.iProduct, function(error, deviceName){
@@ -314,6 +324,6 @@ function detectVideoControlInterface(device) {
  */
 function isWebcam(device){
   // http://www.usb.org/developers/defined_class/#BaseClass10h
-  return device.deviceDescriptor.bDeviceClass === 239 && 
-          device.deviceDescriptor.bDeviceSubClass === 2;
+  return device.deviceDescriptor.bDeviceClass === 239 &&
+    device.deviceDescriptor.bDeviceSubClass === 2;
 }

@@ -1,14 +1,14 @@
 {
-  "name": "uvc-control",
-  "version": "1.0.2",
-  "description": "Control UVC compliant webcams from node",
+  "name": "uvc-control2",
+  "version": "1.0.3",
+  "description": "Control UVC compliant webcams from node, support relative pan tilt",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/makenai/node-uvc-control.git"
+    "url": "git+https://github.com/qweasd1/node-uvc-control"
   },
   "keywords": [
     "webcam",
@@ -21,13 +21,13 @@
   ],
   "author": "Pawel Szymczykowski <makenai@gmail.com>",
   "contributors": [
-    "Josh Beckwith <josh.beckwith@gmail.com> (https://github.com/positlabs/)"
+    "Tony Wang <zhw65@pitt.edu> (https://github.com/qweasd1/)"
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/makenai/node-uvc-control/issues"
+    "url": "https://github.com/qweasd1/node-uvc-control/issues"
   },
-  "homepage": "https://github.com/makenai/node-uvc-control#readme",
+  "homepage": "https://github.com/qweasd1/node-uvc-control#readme",
   "dependencies": {
     "usb": "^1.1.2"
   },
