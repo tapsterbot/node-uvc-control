@@ -1,6 +1,6 @@
 {
   "name": "uvc-control2",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Control UVC compliant webcams from node, support relative pan tilt",
   "main": "index.js",
   "scripts": {

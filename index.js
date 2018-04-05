@@ -254,7 +254,7 @@ UVCControl.prototype.set = function(id, value) {
  * @param  {buffer}   value
  * @param  {Function} callback(error)
  */
-UVCControl.prototype.setRaw = function(id, value, callback) {
+UVCControl.prototype.setRaw = function(id, value) {
 
   return new Promise((resolve,reject)=>{
     this.getControlParams(id, function(error, params) {
