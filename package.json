@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/qweasd1/node-uvc-control#readme",
   "dependencies": {
-    "usb": "^1.1.2"
+    "usb": "^2.9.0"
   },
   "engines": {
     "node": ">=0.12"
